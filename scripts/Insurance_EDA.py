@@ -109,21 +109,9 @@ class InsuranceEDA:
         plt.title('TotalClaims by VehicleType and Province')
         plt.xticks(rotation=45)
         plt.show()
-
-    def dist_box(self,df):
-        # function plots a combined graph for univariate analysis of continous variable 
-        #to check spread, central tendency , dispersion and outliers  
-        Name=df.name.upper()
-        fig,(ax_box,ax_dis)  =plt.subplots(2,1,gridspec_kw = {"height_ratios": (.25, .75)},figsize=(8, 5))
-        mean=df.mean()
-        median=df.median()
-        mode=df.mode().tolist()[0]
-        fig.suptitle("SPREAD OF DATA FOR "+ Name  , fontsize=18, fontweight='bold')
-        sns.boxplot(x=df,showmeans=True, orient='h',color="violet",ax=ax_box)
-        ax_box.set(xlabel='')
-        sns.distplot(df,kde=False,color='blue',ax=ax_dis)
-        ax_dis.axvline(mean, color='r', linestyle='--',linewidth=2)
-        ax_dis.axvline(median, color='g', linestyle='-',linewidth=2)
-        ax_dis.axvline(mode, color='y', linestyle='-',linewidth=2)
-        plt.legend({'Mean':mean,'Median':median,'Mode':mode})
+        
+        plt.figure(figsize=(10, 5))
+        sns.boxplot(x='TotalClaims', y='TotalPremium', data=df)
+        plt.title('Distribution of TotalClaims by TotalPremium')
+        plt.show()
    
