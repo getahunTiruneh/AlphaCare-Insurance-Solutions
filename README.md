@@ -30,7 +30,8 @@ AlphaCare Insurance Solutions (ACIS) aims to refine its marketing approach and i
 - `data/`: Directory containing the historical insurance claim data.
 - `notebooks/`: Jupyter notebooks with data preprocessing, EDA, hypothesis testing, and model development.
 - `README.md`: Project overview and guidelines.
-
+## Conclusion
+- This notebook provided a comprehensive analysis of insurance claim data, including EDA, A/B Hypothesis Testing, and Statistical Modeling. Insights from this analysis will guide strategic decisions in insurance marketing and risk management.
 ## Getting Started
 1. Clone the repository:
    ```bash
