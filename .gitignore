@@ -1,5 +1,7 @@
+data/
 .venv
 __pycache__
 .pytest_cache
 # Ignore DVC storage directory
 dvc_storage/
+.vscode
