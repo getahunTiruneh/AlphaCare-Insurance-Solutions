@@ -1,10 +1,10 @@
 import unittest
 import pandas as pd
-from scripts.data_quality_checker import DataQualityChecker
+from scripts.data_quality_checker import DataQualityChecker 
 
-class TestDataQuality(unittest.TestCase):
+class TestDataQualityChecker(unittest.TestCase):
     """
-    A class to test the data quality of a pandas DataFrame using DataQualityChecker.
+    A class to test the data quality of a pandas DataFrame.
     """
 
     def setUp(self):
@@ -12,40 +12,58 @@ class TestDataQuality(unittest.TestCase):
         Set up the test data.
         """
         self.data = pd.DataFrame({
-            'column1': [1, 2, 3, None],
-            'column2': [4, 5, 6, 7],
+            'column1': [1, 2, None, 4],
+            'column2': [None, 5, 6, 7],
             'column3': ['a', 'b', 'c', 'd']
         })
-        self.data_quality_checker = DataQualityChecker(self.data)
-
-    def test_missing_values(self):
-        """
-        Test for missing values in the DataFrame.
-        """
-        missing_values = self.data_quality_checker.check_missing_values()
-        self.assertTrue(missing_values['column1'], "Column1 should have missing values.")
-        self.assertFalse(missing_values['column2'], "Column2 should not have missing values.")
-        self.assertFalse(missing_values['column3'], "Column3 should not have missing values.")
-
-    def test_data_types(self):
-        """
-        Test for correct data types in the DataFrame.
-        """
-        expected_types = {
+        self.expected_types = {
             'column1': 'float64',
-            'column2': 'int64',
-            'column3': 'object'  # Strings in pandas are of object type
+            'column2': 'float64',
+            'column3': 'object'
         }
-        data_types = self.data_quality_checker.check_data_types(expected_types)
-        self.assertTrue(data_types['column1'], "Column1 should be of type float.")
-        self.assertTrue(data_types['column2'], "Column2 should be of type int.")
-        self.assertTrue(data_types['column3'], "Column3 should be of type object.")
+        self.checker = DataQualityChecker(self.data)
 
-    def test_duplicates(self):
+    def test_check_missing_values(self):
         """
-        Test for duplicate rows in the DataFrame.
+        Test the missing values check function.
         """
-        self.assertFalse(self.data_quality_checker.check_duplicates(), "There should be no duplicate rows.")
+        report_df = self.checker.check_missing_values()
+        
+        # Assert that the report DataFrame contains the correct columns
+        self.assertTrue('Column' in report_df.columns)
+        self.assertTrue('Missing Count' in report_df.columns)
+        self.assertTrue('Missing Percentage' in report_df.columns)
+
+        # Assert specific values
+        self.assertEqual(report_df.loc[report_df['Column'] == 'column1', 'Missing Count'].values[0], 1)
+        self.assertEqual(report_df.loc[report_df['Column'] == 'column2', 'Missing Percentage'].values[0], 25.0)
+
+    def test_check_data_types(self):
+        """
+        Test the data types check function.
+        """
+        report_df = self.checker.check_data_types(self.expected_types)
+
+        # Assert that the report DataFrame contains the correct columns
+        self.assertTrue('Column' in report_df.columns)
+        self.assertTrue('Actual Data Type' in report_df.columns)
+        self.assertTrue('Expected Data Type' in report_df.columns)
+        self.assertTrue('Match' in report_df.columns)
+
+        # Assert specific values
+        self.assertTrue(report_df.loc[report_df['Column'] == 'column1', 'Match'].values[0])  # Check if 'column1' has the expected type
+        self.assertTrue(report_df.loc[report_df['Column'] == 'column2', 'Match'].values[0])  # Check if 'column2' has the expected type
+
+
+
+    def test_check_duplicates(self):
+        """
+        Test the duplicates check function.
+        """
+        message = self.checker.check_duplicates()
+        
+        # Assert the message about duplicates
+        self.assertEqual(message, "No duplicate rows found in the DataFrame.")
 
 if __name__ == '__main__':
     unittest.main()
